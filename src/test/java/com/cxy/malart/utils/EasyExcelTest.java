@@ -22,13 +22,17 @@ public class EasyExcelTest {
 
     @Test
     public void doImport() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:test_excel.xlsx");
+        File file = ResourceUtils.getFile("classpath:网站测试数据.xlsx");
         List<Map<Integer, String>> list = EasyExcel.read(file)
                 .excelType(ExcelTypeEnum.XLSX)
                 .sheet()
                 .headRowNumber(0)
                 .doReadSync();
         System.out.println(list);
+    }
+    @Test
+    public void excelUtils() throws FileNotFoundException {
+
     }
 
 }

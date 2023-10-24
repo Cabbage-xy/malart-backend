@@ -8,27 +8,31 @@ import com.cxy.malart.common.DeleteRequest;
 import com.cxy.malart.common.ErrorCode;
 import com.cxy.malart.common.ResultUtils;
 import com.cxy.malart.constant.CommonConstant;
+import com.cxy.malart.constant.FileConstant;
 import com.cxy.malart.constant.UserConstant;
 import com.cxy.malart.exception.BusinessException;
 import com.cxy.malart.exception.ThrowUtils;
-import com.cxy.malart.model.dto.chart.ChartAddRequest;
-import com.cxy.malart.model.dto.chart.ChartEditRequest;
-import com.cxy.malart.model.dto.chart.ChartQueryRequest;
-import com.cxy.malart.model.dto.chart.ChartUpdateRequest;
+import com.cxy.malart.model.dto.chart.*;
+import com.cxy.malart.model.dto.file.UploadFileRequest;
 import com.cxy.malart.model.entity.Chart;
 import com.cxy.malart.model.entity.User;
+import com.cxy.malart.model.enums.FileUploadBizEnum;
 import com.cxy.malart.service.ChartService;
 import com.cxy.malart.service.UserService;
+import com.cxy.malart.utils.ExcelUtils;
 import com.cxy.malart.utils.SqlUtils;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 /**
  * 帖子接口
@@ -222,6 +226,7 @@ public class ChartController {
             return queryWrapper;
         }
         Long id = chartQueryRequest.getId();
+        String name = chartQueryRequest.getName();
         String goal = chartQueryRequest.getGoal();
         String chartType = chartQueryRequest.getChartType();
         Long userId = chartQueryRequest.getUserId();
@@ -239,5 +244,25 @@ public class ChartController {
                 sortField);
         return queryWrapper;
     }
+    /**
+     * 文件上传
+     *
+     * @param multipartFile
+     * @param genChartByAiRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/upload")
+    public BaseResponse<String> genChartByAi(@RequestPart("file") MultipartFile multipartFile,
+                                             GenChartByAiRequest genChartByAiRequest, HttpServletRequest request) {
+        String name = genChartByAiRequest.getName();
+        String goal = genChartByAiRequest.getGoal();
+        String chartType = genChartByAiRequest.getChartType();
 
+        //校验
+        ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "目标为空！");
+        ThrowUtils.throwIf(StringUtils.isNotBlank(name), ErrorCode.PARAMS_ERROR, "名称过长！");
+        String result = ExcelUtils.excelToCsv(multipartFile);
+        return ResultUtils.success(result);
+    }
 }
