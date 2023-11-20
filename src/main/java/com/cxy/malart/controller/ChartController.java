@@ -250,7 +250,7 @@ public class ChartController {
      * @param multipartFile
      * @param genChartByAiRequest
      * @param request
-     * @return
+     * @return 从上传的Excel生成的CSV字符串
      */
     @PostMapping("/upload")
     public BaseResponse<String> genChartByAi(@RequestPart("file") MultipartFile multipartFile,
@@ -263,6 +263,7 @@ public class ChartController {
         ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "目标为空！");
         ThrowUtils.throwIf(StringUtils.isNotBlank(name), ErrorCode.PARAMS_ERROR, "名称过长！");
         String result = ExcelUtils.excelToCsv(multipartFile);
+
         return ResultUtils.success(result);
     }
 }
