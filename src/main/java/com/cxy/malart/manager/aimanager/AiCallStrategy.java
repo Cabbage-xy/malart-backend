@@ -6,7 +6,7 @@ package com.cxy.malart.manager.aimanager;
  * 用途：抽象的AI请求调用类，对于不同的AI调用API，编写不同的实现类
  * @author cxy
  */
-public interface AiCallStragety {
+public interface AiCallStrategy {
     /**
      * 新建对话
      * @return 创建结果，成功：true，失败：false
